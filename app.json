@@ -1,0 +1,15 @@
+{
+  "name": "work-at-olist",
+  "scripts": {
+  },
+  "env": {
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+
+  ]
+}
