@@ -1,8 +1,9 @@
 """
-Model which contains all of the models used by our application
+Model which contains the models used by our application
 """
 
 from django.db import models
+from datetime import datetime
 
 
 class Call(models.Model):
@@ -32,8 +33,42 @@ class CallDetail(models.Model):
 
     """
     call_id = models.ForeignKey('Call', on_delete=models.CASCADE)
-    start = models.BooleanField(default=True)
+    start = models.BooleanField(default=True, blank=False)
     timestamp = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.id)
+
+
+class PriceRule(models.Model):
+    """
+    Database model for the price informations.
+
+    Attributes:
+        created_date (models.DateTimeField): Date time of the rule creation
+    """
+    created_date = models.DateTimeField(default=datetime.now, blank=False)
+
+    def __str__(self):
+        return str(self.id)
+
+
+class PriceRuleDetail(models.Model):
+    """
+    Database model for the price informations.
+
+    Attributes:
+        price_id (models.ForeignKey): price rule id
+        standing_charge (models.FloatField): fixed charge value
+        call_charge (models.FloatField): value charged by minute
+        start (models.TimeField): start time of the price rule period
+        end (models.TimeField): end time of the price rule period
+    """
+    price_id = models.ForeignKey('PriceRule', on_delete=models.CASCADE)
+    standing_charge = models.FloatField(default=0.0, blank=False)
+    call_charge = models.FloatField(default=0.0, blank=False)
+    start = models.TimeField(blank=False)
+    end = models.TimeField(blank=False)
 
     def __str__(self):
         return str(self.id)
