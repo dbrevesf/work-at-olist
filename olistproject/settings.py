@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'olistproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DB_NAME', 'olist'),
+        'USER': os.environ.get('DB_USER', 'olist'),
+        'PASSWORD': os.environ.get('DB_PASS}', 'olist'),
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
