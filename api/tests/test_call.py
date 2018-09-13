@@ -52,6 +52,18 @@ class CallTest(APITestCase):
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_create_call_with_source_bigger_than_11(self):
+
+        data = {'source': '19988271648123123', 'destination': '19988271234'}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_call_with_destination_bigger_than_11(self):
+
+        data = {'source': '19988271648', 'destination': '199882712311231214'}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_create_call_with_same_numbers(self):
 
         data = {'source': '19988271648', 'destination': '19988271648'}
