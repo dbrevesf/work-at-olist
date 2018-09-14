@@ -1,5 +1,5 @@
 """
-Module containing the unit tests of the API endpoints
+Module containing the unit tests of the API endpoint Call
 """
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
@@ -87,3 +87,102 @@ class CallTest(APITestCase):
         data = {'source': '', 'destination': ''}
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_call_with_different_numbers(self):
+
+        data = {'source': '19988271648', 'destination': '19988271234'}
+        response = self.client.post(self.url, data, format='json')
+        call_id = response.data['id']
+        unique_call_url = self.url + str(call_id) + '/'
+        data = {'source': '19988271612',
+                'destination': '19988271245',
+                'pk': call_id}
+        response = self.client.put(unique_call_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_call_with_source_bigger_than_11(self):
+
+        data = {'source': '19988271648', 'destination': '19988271234'}
+        response = self.client.post(self.url, data, format='json')
+        call_id = response.data['id']
+        unique_call_url = self.url + str(call_id) + '/'
+        data = {'source': '19988271612123123',
+                'destination': '19988271245',
+                'pk': call_id}
+        response = self.client.put(unique_call_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_call_with_destination_bigger_than_11(self):
+
+        data = {'source': '19988271648', 'destination': '19988271234'}
+        response = self.client.post(self.url, data, format='json')
+        call_id = response.data['id']
+        unique_call_url = self.url + str(call_id) + '/'
+        data = {'source': '19988271611',
+                'destination': '1998821231271245',
+                'pk': call_id}
+        response = self.client.put(unique_call_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_call_with_same_numbers(self):
+
+        data = {'source': '19988271648', 'destination': '19988271234'}
+        response = self.client.post(self.url, data, format='json')
+        call_id = response.data['id']
+        unique_call_url = self.url + str(call_id) + '/'
+        data = {'source': '19988271611',
+                'destination': '19988271611',
+                'pk': call_id}
+        response = self.client.put(unique_call_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_call_with_source_input_missing(self):
+
+        data = {'source': '19988271648', 'destination': '19988271234'}
+        response = self.client.post(self.url, data, format='json')
+        call_id = response.data['id']
+        unique_call_url = self.url + str(call_id) + '/'
+        data = {'source': '',
+                'destination': '19988271611',
+                'pk': call_id}
+        response = self.client.put(unique_call_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_call_with_destination_input_missing(self):
+
+        data = {'source': '19988271648', 'destination': '19988271234'}
+        response = self.client.post(self.url, data, format='json')
+        call_id = response.data['id']
+        unique_call_url = self.url + str(call_id) + '/'
+        data = {'source': '19988271611',
+                'destination': '',
+                'pk': call_id}
+        response = self.client.put(unique_call_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_call_with_both_input_missing(self):
+
+        data = {'source': '19988271648', 'destination': '19988271234'}
+        response = self.client.post(self.url, data, format='json')
+        call_id = response.data['id']
+        unique_call_url = self.url + str(call_id) + '/'
+        data = {'source': '',
+                'destination': '',
+                'pk': call_id}
+        response = self.client.put(unique_call_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_delete_call(self):
+
+        data = {'source': '19988271648', 'destination': '19988271234'}
+        response = self.client.post(self.url, data, format='json')
+        call_id = response.data['id']
+        unique_call_url = self.url + str(call_id) + '/'
+        response = self.client.delete(unique_call_url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_nonexistent_call(self):
+
+        unique_call_url = self.url + str(123) + '/'
+        response = self.client.delete(unique_call_url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
