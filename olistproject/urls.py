@@ -20,6 +20,7 @@ from api import views
 
 router = routers.DefaultRouter()
 router.register(r'call', views.CallViewSet)
+router.register(r'calldetail', views.CallDetailViewSet)
 
 
 urlpatterns = [
