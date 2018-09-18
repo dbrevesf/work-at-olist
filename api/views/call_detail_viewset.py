@@ -5,6 +5,8 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 
+DATE_PATTERN = '%Y-%m-%dT%H:%M:%SZ'
+
 
 class CallDetailViewSet(viewsets.ModelViewSet):
     """
@@ -37,12 +39,15 @@ class CallDetailViewSet(viewsets.ModelViewSet):
                     if isinstance(request_start, str):
                         if request_start in ['true', 'True']:
                             request_start = True
+                        else:
+                            request_start = False
                     if stored_call_detail.start == request_start:
                         validation = {'input_error':
                                       'a call must start and must end'}
                     stored_timestamp = standardize_date(
-                        stored_call_detail.timestamp)
-                    request_timestamp = standardize_date(request_timestamp)
+                        stored_call_detail.timestamp, DATE_PATTERN)
+                    request_timestamp = standardize_date(request_timestamp,
+                                                         DATE_PATTERN)
                     if stored_timestamp == request_timestamp:
                         validation = {'input_error':
                                       'the timestamps must be different'}
