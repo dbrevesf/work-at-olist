@@ -18,10 +18,12 @@ from django.urls import path, include
 from rest_framework import routers
 from api.views.call_viewset import CallViewSet
 from api.views.call_detail_viewset import CallDetailViewSet
+from api.views.price_rule_viewset import PriceRuleViewSet
 
 router = routers.DefaultRouter()
 router.register(r'call', CallViewSet)
 router.register(r'calldetail', CallDetailViewSet)
+router.register(r'pricerule', PriceRuleViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
