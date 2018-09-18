@@ -25,8 +25,10 @@ class CallViewSet(viewsets.ModelViewSet):
             content (Dictionary): Dictionary with error/success message.
         """
         content = None
-        if 'source' in request_data and 'destination' in request_data:
-            if request_data['source'] == request_data['destination']:
+        source = request_data.get('source')
+        destination = request_data.get('destination')
+        if source and destination:
+            if source == destination:
                 content = {'input_error':
                            'source and destination must be different numbers'}
             else:
