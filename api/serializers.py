@@ -3,6 +3,7 @@ Serializers module.
 """
 from .models import Call
 from .models import CallDetail
+from .models import PriceRule
 from rest_framework import serializers
 
 
@@ -22,3 +23,12 @@ class CallDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CallDetail
         fields = ('id', 'call_id', 'start', 'timestamp')
+
+
+class PriceRuleSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the model PriceRule
+    """
+    class Meta:
+        model = PriceRule
+        fields = ('id', 'created_date')
