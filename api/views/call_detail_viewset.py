@@ -23,7 +23,7 @@ class CallDetailViewSet(viewsets.ModelViewSet):
 
         Return:
 
-            content (Dictionary): Dictionary with error/success message.
+            validation (Dictionary): Dictionary with error/success message.
         """
         call_id = request_data.get('call_id')
         request_timestamp = request_data.get('timestamp')
