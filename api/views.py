@@ -30,14 +30,11 @@ class CallViewSet(viewsets.ModelViewSet):
         """
         content = None
         if 'source' in request_data and 'destination' in request_data:
-            # avoid calls with the same number for source and destination
             if request_data['source'] == request_data['destination']:
                 content = {'input_error':
                            'source and destination must be different numbers'}
             else:
-                # if everything's good, create the call
                 content = {'success': 'success'}
-        # source and destination is required to create a call
         else:
             content = {'input_error':
                        'source and/or destination are missed'}
@@ -92,28 +89,31 @@ class CallDetailViewSet(viewsets.ModelViewSet):
         if call_id and request_timestamp and request_start is not None:
             call_detail_query = CallDetail.objects.filter(call_id=call_id)
             if call_detail_query:
-                stored_call_detail = call_detail_query[0]
-
-                # a call must have a start and an end.
-                if stored_call_detail.start == request_start:
+                if len(call_detail_query) < 2:
+                    stored_call_detail = call_detail_query[0]
+                    if isinstance(request_start, str):
+                        if request_start in ['true', 'True']:
+                            request_start = True
+                    if stored_call_detail.start == request_start:
+                        validation = {'input_error':
+                                      'a call must start and must end'}
+                    stored_timestamp = standardize_date(
+                        stored_call_detail.timestamp)
+                    request_timestamp = standardize_date(request_timestamp)
+                    if stored_timestamp == request_timestamp:
+                        validation = {'input_error':
+                                      'the timestamps must be different'}
+                    if stored_call_detail.start and not request_start:
+                        if stored_timestamp > request_timestamp:
+                            validation = {'input_error':
+                                          'the end must be later'}
+                    elif not stored_call_detail.start and request_start:
+                        if stored_timestamp < request_timestamp:
+                            validation = {'input_error':
+                                          'the end must be later'}
+                else:
                     validation = {'input_error':
-                                  'a call must start and must end'}
-
-                # the timestamps must be different
-                stored_timestamp = standardize_date(
-                    stored_call_detail.timestamp)
-                request_timestamp = standardize_date(request_timestamp)
-                if stored_timestamp == request_timestamp:
-                    validation = {'input_error':
-                                  'the timestamps must be different'}
-
-                # end time must be greater than start time
-                if stored_call_detail.start and not request_start:
-                    if stored_timestamp > request_timestamp:
-                        validation = {'input_error': 'the end must be later'}
-                elif not stored_call_detail.start and request_start:
-                    if stored_timestamp < request_timestamp:
-                        validation = {'input_error': 'the end must be later'}
+                                  'limit of call details exceeded.'}
 
         return validation
 
