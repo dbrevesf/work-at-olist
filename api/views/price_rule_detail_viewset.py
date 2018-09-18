@@ -38,12 +38,14 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
             start = standardize_date(start, TIME_PATTERN)
             end = standardize_date(end, TIME_PATTERN)
             if isinstance(start, datetime) and isinstance(end, datetime):
-                if start >= end:
+                if start == end:
                     validation = {'input_error':
-                                  'end must be later than start'}
+                                  'end must be different than start'}
                 else:
-                    check = self.__check_time_conflicts(price_id, start, end)
-                    if not check:
+                    time_conflicts = self.__check_time_conflicts(price_id,
+                                                                 start.time(),
+                                                                 end.time())
+                    if time_conflicts:
                         error_message = 'time conflict between the rules'
                         validation = {'input_error': error_message}
             else:
@@ -55,18 +57,34 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
 
     def __check_time_conflicts(self, price_id, start, end):
 
-        response = True
+        conflict = False
         if price_id:
             price_rules = PriceRuleDetail.objects.filter(price_id=price_id)
             if len(price_rules) > 0:
-                time_interval = []
-                response = False
                 for rule in price_rules:
-                    time_interval.append(rule.start)
-                    time_interval.append(rule.end)
-                if start.time() > max(time_interval):
-                    response = True
-        return response
+                    if rule.start > rule.end:
+                        if start > end:
+                            conflict = True
+                            break
+                        else:
+                            if rule.start <= start or start <= rule.end:
+                                conflict = True
+                                break
+                            elif rule.start <= end or end <= rule.end:
+                                conflict = True
+                                break
+                            else:
+                                conflict = False
+                    else:
+                        if rule.start <= start <= rule.end:
+                            conflict = True
+                            break
+                        elif rule.start <= end <= rule.end:
+                            conflict = True
+                            break
+                        else:
+                            conflict = False
+        return conflict
 
     def create(self, request):
 
