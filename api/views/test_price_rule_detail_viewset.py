@@ -112,7 +112,7 @@ class PriceRuleDetailTest(APITestCase):
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_price_rule_detail_with_start_later_than_end(self):
+    def test_create_two_price_rule_details(self):
 
         data = {'created_date': '2018-09-13T19:18:43Z'}
         response = self.client.post(self.price_rule_url, data, format='json')
@@ -120,12 +120,18 @@ class PriceRuleDetailTest(APITestCase):
         data = {'price_id': price_rule_id,
                 'standing_charge': 0.30,
                 'call_charge': 0.40,
-                'start': '08:00',
-                'end': '00:00'}
+                'start': '22:00',
+                'end': '06:00'}
         response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = {'price_id': price_rule_id,
+                'standing_charge': 0.30,
+                'call_charge': 0.40,
+                'start': '06:01',
+                'end': '21:59'}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_create_price_rule_detail_with_conflict_with_another_rule(self):
+    def test_create_two_price_rule_details_with_conflict(self):
 
         data = {'created_date': '2018-09-13T19:18:43Z'}
         response = self.client.post(self.price_rule_url, data, format='json')
@@ -133,16 +139,66 @@ class PriceRuleDetailTest(APITestCase):
         data = {'price_id': price_rule_id,
                 'standing_charge': 0.30,
                 'call_charge': 0.40,
-                'start': '00:00',
-                'end': '08:00'}
+                'start': '22:00',
+                'end': '06:00'}
         response = self.client.post(self.url, data, format='json')
         data = {'price_id': price_rule_id,
                 'standing_charge': 0.30,
                 'call_charge': 0.40,
-                'start': '08:00',
-                'end': '11:00'}
+                'start': '05:00',
+                'end': '21:59'}
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_three_price_rule_details_with_conflict(self):
+
+        data = {'created_date': '2018-09-13T19:18:43Z'}
+        response = self.client.post(self.price_rule_url, data, format='json')
+        price_rule_id = response.data.get('id')
+        data = {'price_id': price_rule_id,
+                'standing_charge': 0.30,
+                'call_charge': 0.40,
+                'start': '22:00',
+                'end': '06:00'}
+        response = self.client.post(self.url, data, format='json')
+        data = {'price_id': price_rule_id,
+                'standing_charge': 0.30,
+                'call_charge': 0.40,
+                'start': '07:00',
+                'end': '10:00'}
+        response = self.client.post(self.url, data, format='json')
+        data = {'price_id': price_rule_id,
+                'standing_charge': 0.30,
+                'call_charge': 0.40,
+                'start': '20:00',
+                'end': '3:00'}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_three_price_rule_details(self):
+
+        data = {'created_date': '2018-09-13T19:18:43Z'}
+        response = self.client.post(self.price_rule_url, data, format='json')
+        price_rule_id = response.data.get('id')
+        data = {'price_id': price_rule_id,
+                'standing_charge': 0.30,
+                'call_charge': 0.40,
+                'start': '22:00',
+                'end': '06:00'}
+        response = self.client.post(self.url, data, format='json')
+        data = {'price_id': price_rule_id,
+                'standing_charge': 0.30,
+                'call_charge': 0.40,
+                'start': '07:00',
+                'end': '10:00'}
+        response = self.client.post(self.url, data, format='json')
+        data = {'price_id': price_rule_id,
+                'standing_charge': 0.30,
+                'call_charge': 0.40,
+                'start': '11:00',
+                'end': '20:00'}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_price_rule_detail_with_negative_standing_charge(self):
 
@@ -268,23 +324,6 @@ class PriceRuleDetailTest(APITestCase):
         price_rule_detail_id = response.data.get('id')
         price_rule_detail_url = self.url + str(price_rule_detail_id) + '/'
         data['start'] = data['end']
-        response = self.client.put(price_rule_detail_url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_update_price_rule_detail_with_start_later_than_end(self):
-
-        data = {'created_date': '2018-09-13T19:18:43Z'}
-        response = self.client.post(self.price_rule_url, data, format='json')
-        price_rule_id = response.data.get('id')
-        data = {'price_id': price_rule_id,
-                'standing_charge': 0.39,
-                'call_charge': 0.40,
-                'start': '00:00',
-                'end': '08:00'}
-        response = self.client.post(self.url, data, format='json')
-        price_rule_detail_id = response.data.get('id')
-        price_rule_detail_url = self.url + str(price_rule_detail_id) + '/'
-        data['start'] = '18:00'
         response = self.client.put(price_rule_detail_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
