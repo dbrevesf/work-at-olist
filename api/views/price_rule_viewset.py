@@ -12,7 +12,7 @@ class PriceRuleViewSet(viewsets.ModelViewSet):
     queryset = PriceRule.objects.all()
     serializer_class = PriceRuleSerializer
 
-    def validate_input(self, request_data):
+    def __validate_input(self, request_data):
         """
         Method to validate the inputs for the API endpoint PriceRule.
 
@@ -37,7 +37,7 @@ class PriceRuleViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
 
-        validation = self.validate_input(request.data)
+        validation = self.__validate_input(request.data)
         response = None
         if validation:
             response = Response(validation, status.HTTP_400_BAD_REQUEST)
@@ -47,7 +47,7 @@ class PriceRuleViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
 
-        validation = self.validate_input(request.data)
+        validation = self.__validate_input(request.data)
         response = None
         if validation:
             response = Response(validation, status.HTTP_400_BAD_REQUEST)

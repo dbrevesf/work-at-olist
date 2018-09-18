@@ -15,7 +15,7 @@ class CallDetailViewSet(viewsets.ModelViewSet):
     queryset = CallDetail.objects.all()
     serializer_class = CallDetailSerializer
 
-    def validate_input(self, request_data):
+    def __validate_input(self, request_data):
         """
         Method to validate the inputs for the API endpoint CallDetails.
 
@@ -68,7 +68,7 @@ class CallDetailViewSet(viewsets.ModelViewSet):
     def create(self, request):
 
         response = None
-        validation = self.validate_input(request.data)
+        validation = self.__validate_input(request.data)
         if validation:
             response = Response(validation, status.HTTP_400_BAD_REQUEST)
         else:
@@ -79,11 +79,10 @@ class CallDetailViewSet(viewsets.ModelViewSet):
     def update(self, request, pk=None):
 
         response = None
-        validation = self.validate_input(request.data)
+        validation = self.__validate_input(request.data)
         if validation:
             response = Response(validation, status.HTTP_400_BAD_REQUEST)
         else:
             response = super(CallDetailViewSet, self).update(request, pk)
 
         return response
-

@@ -16,7 +16,7 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
     queryset = PriceRuleDetail.objects.all()
     serializer_class = PriceRuleDetailSerializer
 
-    def validate_input(self, request_data):
+    def __validate_input(self, request_data):
         """
         Method to validate the inputs for the API endpoint PriceRuleDetail.
 
@@ -42,7 +42,7 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
                     validation = {'input_error':
                                   'end must be later than start'}
                 else:
-                    check = self.check_time_conflicts(price_id, start, end)
+                    check = self.__check_time_conflicts(price_id, start, end)
                     if not check:
                         error_message = 'time conflict between the rules'
                         validation = {'input_error': error_message}
@@ -53,7 +53,7 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
 
         return validation
 
-    def check_time_conflicts(self, price_id, start, end):
+    def __check_time_conflicts(self, price_id, start, end):
 
         response = True
         if price_id:
@@ -71,7 +71,7 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
     def create(self, request):
 
         response = None
-        validation = self.validate_input(request.data)
+        validation = self.__validate_input(request.data)
         if validation:
             response = Response(validation, status.HTTP_400_BAD_REQUEST)
         else:
@@ -82,7 +82,7 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
     def update(self, request, pk=None):
 
         response = None
-        validation = self.validate_input(request.data)
+        validation = self.__validate_input(request.data)
         if validation:
             response = Response(validation, status.HTTP_400_BAD_REQUEST)
         else:

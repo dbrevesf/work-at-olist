@@ -12,7 +12,7 @@ class CallViewSet(viewsets.ModelViewSet):
     queryset = Call.objects.all()
     serializer_class = CallSerializer
 
-    def validate_input(self, request_data):
+    def __validate_input(self, request_data):
         """
         Method to validate the inputs for the API endpoint Call.
 
@@ -41,7 +41,7 @@ class CallViewSet(viewsets.ModelViewSet):
     def create(self, request):
 
         response = None
-        validation = self.validate_input(request.data)
+        validation = self.__validate_input(request.data)
         if 'success' in validation:
             response = super(CallViewSet, self).create(request)
         else:
@@ -52,7 +52,7 @@ class CallViewSet(viewsets.ModelViewSet):
     def update(self, request, pk=None):
 
         response = None
-        validation = self.validate_input(request.data)
+        validation = self.__validate_input(request.data)
         if 'success' in validation:
             response = super(CallViewSet, self).update(request, pk)
         else:
