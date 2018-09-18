@@ -36,6 +36,22 @@ class PriceRuleTest(APITestCase):
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_create_price_rules_with_same_date(self):
+        data = {'created_date': '2018-09-13T19:18:43Z'}
+        self.client.post(self.url, data, format='json')
+        data = {'created_date': '2018-09-13T19:18:43Z'}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_price_rules_with_same_date(self):
+        data = {'created_date': '2018-09-13T19:18:43Z'}
+        response = self.client.post(self.url, data, format='json')
+        price_rule_id = response.data.get('id')
+        price_rule_url = self.url + str(price_rule_id) + '/'
+        data = {'created_date': '2018-09-13T19:18:43Z'}
+        response = self.client.put(price_rule_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_get_a_single_price_rule(self):
         data = {'created_date': '2018-09-13T19:18:43Z'}
         response = self.client.post(self.url, data, format='json')
