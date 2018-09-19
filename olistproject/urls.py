@@ -20,14 +20,16 @@ from api.views.call_viewset import CallViewSet
 from api.views.call_detail_viewset import CallDetailViewSet
 from api.views.price_rule_viewset import PriceRuleViewSet
 from api.views.price_rule_detail_viewset import PriceRuleDetailViewSet
+from api.views.telephone_bill_viewset import TelephoneBillViewSet
 
 router = routers.DefaultRouter()
 router.register(r'call', CallViewSet)
 router.register(r'calldetail', CallDetailViewSet)
 router.register(r'pricerule', PriceRuleViewSet)
 router.register(r'priceruledetail', PriceRuleDetailViewSet)
+router.register(r'telephonebill', TelephoneBillViewSet, base_name='telephonebill')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
 ]
