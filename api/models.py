@@ -8,7 +8,7 @@ from datetime import datetime
 
 class Call(models.Model):
     """
-    Database model for the telephone calls.
+    Telephone calls.
 
     Attributes:
         source (models.CharField): telephone number of the source
@@ -24,7 +24,7 @@ class Call(models.Model):
 
 class CallDetail(models.Model):
     """
-    Database model for the details of a telephone call.telephone
+    Details of a telephone call.
 
     Attributes:
         call_id (Call.id): the foreign key from Call
@@ -42,7 +42,7 @@ class CallDetail(models.Model):
 
 class PriceRule(models.Model):
     """
-    Database model for the price informations.
+    Rules to calculate a price
 
     Attributes:
         created_date (models.DateTimeField): Date time of the rule creation
@@ -55,7 +55,7 @@ class PriceRule(models.Model):
 
 class PriceRuleDetail(models.Model):
     """
-    Database model for the price informations.
+    Details of a rule to calculate a price
 
     Attributes:
         price_id (models.ForeignKey): price rule id
