@@ -1,3 +1,4 @@
+from api import strings
 from api.models import PriceRule
 from api.serializers import PriceRuleSerializer
 from rest_framework import status
@@ -14,7 +15,7 @@ class PriceRuleViewSet(viewsets.ModelViewSet):
 
     def __validate_input(self, request_data):
         """
-        Method to validate the inputs for the API endpoint PriceRule.
+        Validate the inputs for the API endpoint PriceRule.
 
         Parameters:
 
@@ -24,19 +25,21 @@ class PriceRuleViewSet(viewsets.ModelViewSet):
 
             validation (Dictionary): Dictionary with error/success message.
         """
-        created_date = request_data.get('created_date')
+        created_date = request_data.get(strings.CREATED_DATE_KEY)
         price_rules = PriceRule.objects
         validation = None
         if created_date:
             stored_price_rule = price_rules.filter(created_date=created_date)
             if stored_price_rule:
-                validation = {'input_error':
-                              'two price rules with the same time date'}
+                validation = {strings.INPUT_ERROR_KEY:
+                              strings.PRICE_RULES_SAME_DATE_ERROR}
 
         return validation
 
     def create(self, request):
-
+        """
+        POST /api/pricerule/
+        """
         validation = self.__validate_input(request.data)
         response = None
         if validation:
@@ -46,7 +49,9 @@ class PriceRuleViewSet(viewsets.ModelViewSet):
         return response
 
     def update(self, request, pk=None):
-
+        """
+        PUT /api/pricerule/<pk>
+        """
         validation = self.__validate_input(request.data)
         response = None
         if validation:

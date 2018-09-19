@@ -1,12 +1,11 @@
+from api import strings
+from api import utils
 from api.models import PriceRuleDetail
 from api.serializers import PriceRuleDetailSerializer
-from api.utils import standardize_date
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from datetime import datetime
-
-TIME_PATTERN = '%H:%M'
 
 
 class PriceRuleDetailViewSet(viewsets.ModelViewSet):
@@ -18,7 +17,7 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
 
     def __validate_input(self, request_data):
         """
-        Method to validate the inputs for the API endpoint PriceRuleDetail.
+        Validate the inputs for the API endpoint PriceRuleDetail.
 
         Parameters:
 
@@ -29,38 +28,50 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
             validation (Dictionary): Dictionary with error/success message.
         """
         validation = None
-        start = request_data.get('start')
-        end = request_data.get('end')
-        standing_charge = request_data.get('standing_charge')
-        call_charge = request_data.get('call_charge')
-        price_id = request_data.get('price_id')
+        start = request_data.get(strings.START_KEY)
+        end = request_data.get(strings.END_KEY)
+        standing_charge = request_data.get(strings.STANDING_CHARGE_KEY)
+        call_charge = request_data.get(strings.CALL_CHARGE_KEY)
+        price_id = request_data.get(strings.PRICE_ID_KEY)
         if start and end and standing_charge and call_charge:
-            start = standardize_date(start, TIME_PATTERN)
-            end = standardize_date(end, TIME_PATTERN)
+            start = utils.standardize_date(start, strings.TIME_PATTERN)
+            end = utils.standardize_date(end, strings.TIME_PATTERN)
             if isinstance(start, datetime) and isinstance(end, datetime):
                 if start == end:
-                    validation = {'input_error':
-                                  'end must be different than start'}
+                    validation = {strings.INPUT_ERROR_KEY:
+                                  strings.END_EQUAL_START_ERROR}
                 else:
                     time_conflicts = self.__check_time_conflicts(price_id,
                                                                  start.time(),
                                                                  end.time())
                     if time_conflicts:
-                        error_message = 'time conflict between the rules'
-                        validation = {'input_error': error_message}
+                        validation = {strings.INPUT_ERROR_KEY:
+                                      strings.RULES_TIME_CONFLICT_ERROR}
             else:
-                validation = {'input_error': 'wrong time format'}
+                validation = {strings.INPUT_ERROR_KEY:
+                              strings.TIME_FORMAT_ERROR}
             if float(standing_charge) < 0.0 or float(call_charge) < 0.0:
-                validation = {'input_error': 'charges must be positive'}
-
+                validation = {strings.INPUT_ERROR_KEY:
+                              strings.NEGATIVE_CHARGES_ERROR}
         return validation
 
     def __check_time_conflicts(self, price_id, start, end):
+        """
+        Verify if a rule will not conflict with another due to the time period.
 
+        Parameters:
+            price_id (int): PriceRuleDetail identification
+            start (datetime.datetime): start period of the rule detail
+            end (datetime.datetime): end period of the rule detail
+
+        Return:
+            conflict (boolean): True if there's a conflict or False.
+
+        """
         conflict = False
         if price_id:
             price_rules = PriceRuleDetail.objects.filter(price_id=price_id)
-            if len(price_rules) > 0:
+            if len(price_rules):
                 for rule in price_rules:
                     if rule.start > rule.end:
                         if start > end:
@@ -87,7 +98,9 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
         return conflict
 
     def create(self, request):
-
+        """
+        POST /api/priceruledetail/
+        """
         response = None
         validation = self.__validate_input(request.data)
         if validation:
@@ -98,7 +111,9 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
         return response
 
     def update(self, request, pk=None):
-
+        """
+        PUT /api/priceruledetail/<pk>/
+        """
         response = None
         validation = self.__validate_input(request.data)
         if validation:
