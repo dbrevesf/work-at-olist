@@ -90,12 +90,15 @@ This model represents a new price rule. The value of ```created_date``` informs 
 
 Every PriceRule is composed of many PriceRuleDetails. Every PriceRuleDetail can cover a period of time and apply variable charges per minute (call_charge) and fixed charge by call (standing_charge). To compute a bill, we need to look for the PriceRuleDetail that fits the period of time of the calls. 
 
+### Endpoints
 
 Now That we already learnt about the models, we can describe the API endpoints:
 
+* #### /api/call
+
 * ```GET /api/call/```: get the list of all the calls
 
-  HTTP 200 OK
+  *HTTP 200 OK*
 
   ```json
   [
@@ -114,7 +117,7 @@ Now That we already learnt about the models, we can describe the API endpoints:
 
 * ```GET /api/call/<id>```: get the call if it exists
 
-  HTTP 200 OK
+  *HTTP 200 OK*
 
   ```json
   {
@@ -124,7 +127,7 @@ Now That we already learnt about the models, we can describe the API endpoints:
   }
   ```
 
-  HTTP 404 NOT FOUND
+  *HTTP 404 NOT FOUND*
 
   ```json
   {
@@ -134,7 +137,7 @@ Now That we already learnt about the models, we can describe the API endpoints:
 
 * ```POST /api/call/```: create a new call
 
-  HTTP 201 CREATED
+  *HTTP 201 CREATED*
 
   ```json
   {
@@ -143,3 +146,8 @@ Now That we already learnt about the models, we can describe the API endpoints:
       "destination": "9993468278"
   }
   ```
+
+
+
+
+
