@@ -1,215 +1,334 @@
-# Work at Olist
+# Work at Olist - Telephone Bill Project
 
-[Olist](https://olist.com/) is a company that offers an integration platform
-for sellers and marketplaces allowing them to sell their products across
-multiple channels.
+## Project Documentation
 
-The Olist development team consists of developers who loves what they do. Our
-agile development processes and our search for the best development practices
-provide a great environment for professionals who like to create quality
-software in good company.
+* Description
 
-We are always looking for good programmers who love to improve their work. We
-give preference to small teams with qualified professionals over large teams
-with average professionals.
+  This project was made for the selection process of a software engineer role at Olist. I was asked to implement an application that receives call detail records and calculates monthly bills for a given phone number and it would be necessary to provide a HTTP REST API to attend the requirements. Beside the application itself, I also was asked to write the project documentation and the API documentation. Both documentation will be presented below. 
 
-This repository contains a problem used to evaluate the candidate skills.
-It's important to notice that satisfactorily solving the problem is just a
-part of what will be evaluated. We also consider other programming disciplines
-like documentation, testing, commit timeline, design and coding best
-practices.
+* Installing
 
-Hints:
+  The installation process for this project it's very simple. Once you have the Python and Pip installed, you just need to clone this repository, enter in the project root directory and execute: 
 
-* Carefully read the specification to understand all the problem and
-  artifact requirements before start.
-* Check the recommendations and reference material at the end of this
-  specification.
+  ```pip install -r requirements.txt```
 
+  It's a good practice to create a virtual environment, but that's up to you.
 
-## How to participate
+  After all the requirements are installed, we need to install PostgreSQL and create a database for our project. The database credentials could vary depending on the environment that you'll work, but, for running it locally, create a user, a database and a password with the same value: 'olist'. It will make it easy for you.
 
-1. Make a fork of this repository on Github. If you can't create a
-   public fork of this project, make a private repository
-   (bitbucket offers free private repos) and add read permission for the
-   user [@tech-hiring](https://bitbucket.org/tech-hiring) on project;
-2. Follow the instructions of README.md (this file);
-3. Deploy your project on a host service (we recommend
-   [Heroku](https://heroku.com) or [gigalixir](https://www.gigalixir.com));
-4. Apply for the position at our [career page](https://www.99jobs.com/olist)
-   with:
-   * Link to the fork on Github (or bitbucket.org);
-   * Link to the project in a the deployed host service.
+  If you have any trouble to use PostgreSQL, access this [link](https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e) that you'll have all the information that you need. 
+  
+  Now, with everything installed, it's time to apply the Django's migration to create our database tables. So, on a terminal, inside the root directory of the project, you'll execute:
+
+  ```
+  python manage.py makemigrations
+  python manage.py migrate
+  ```
+
+  The ```makemigrations``` generates a lot of files that the command ```migrate``` will use. 
+
+  Obs: If you're planning to host this project on Heroku, be aware that you'll need to commit the migrations files and apply just the ```migration``` there. Unfortunately, the command ```makemigrations``` don't work on Heroku instances. 
+
+  Now everything's set up and you can run your server locally through the command:
+
+  ```python manage.py runserver```
 
 
-## Specification
+* Testing
 
-You should implement an application that receives call detail records
-and calculates monthly bills for a given telephone number.
+  There are several unit tests written for this project. All of them is located on ```work-at-olist/api/views/test```. To run this tests, access the root directory of the project and execute:
 
-There are a plenty of telecommunications platform technologies that will 
-consume this application. Some of them have weird behaviours when something 
-goes wrong. That said it's not safe to believe in received data correctness, 
-consistency nor expect some order in their requests. The application should 
-have flexibility in receiving information to avoid record loss or inconsistency.
+  ```python manage.py test api/views/```
 
-This application must provide a HTTP REST API to attend the
-requirements.
+  at the time of this documentation, there were 77 unit tests covering all the API endpoints.
 
+* Work Environment
 
-### 1. Receive telephone call detail records
+  This project was developed in a MacBook with the following specs:
 
-There are two call detailed record types: **Call Start Record** and **Call
-End Record**. To get all information of a telephone call you should use the
-records pair.
+  * Model: MacBook Pro Retina 13-inch
+  * Processor: Intel Core i5 2,7 GHz
+  * Memory: 8 Gb
+  * O.S.: macOS High Sierra
 
-Call Start Record information:
+  The software specifications of this project are:
 
-* **record type**: Indicate if it's a call start or end record;
-* **record timestamp**: The timestamp of when the event occured;
-* **call identifier**: Unique for each call record pair;
-* **origin phone number**: The subscriber phone number that originated the
-  call;
-* **destination phone number**: The phone number receiving the call.
-
-The Call End Record has the same information excepting **origin** and
-**destination** fields.
-
-The phone number format is *AAXXXXXXXXX*, where *AA* is the area code and
-*XXXXXXXXX* is the phone number. The phone number is composed of 8 or 9
-digits.
+  * Programming Language: Python 3.6.5
+  * Frameworks: 
+    * Django 2.1.1
+    * Django Rest Framework 3.8.2
+  * Database: PostgreSQL
+  * IDE: Sublime Text 3.1.1
 
 
-#### Examples
+* Production
 
-1. Call Start Record
+  The application is hosted on a Heroku instance and can be accessed through the link: https://dbrevesf-olist-production.herokuapp.com/
 
-```
-{
-  "id":  // Record unique identificator;
-  "type":  // Indicate if it's a call "start" or "end" record;
-  "timestamp":  // The timestamp of when the event occured;
-  "call_id":  // Unique for each call record pair;
-  "source":  // The subscriber phone number that originated the call;
-  "destination":  // The phone number receiving the call.
-}
-```
+  The Django Framework provides an administrator interface that could help you to create, remove, update or delete some database entries. To access it: https://dbrevesf-olist-production.herokuapp.com/admin
 
-2. Call End Record
-
-```
-{
-   "id":  // Record unique identificator;
-   "type":  // Indicate if it's a call "start" or "end" record;
-   "timestamp":  // The timestamp of when the event occured;
-   "call_id":  // Unique for each call record pair.
-}
-```
+  Besides the admin page, you can also access the API interface. It's a helpful interface, generated by the Django Rest Framework, to handle REST APIs with ease. For access it: https://dbrevesf-olist-production.herokuapp.com/api
 
 
-### 2. Get telephone bill
+## API Documentation
 
-To get a telephone bill we need two information: the subscriber telephone
-number (required); the reference period (month/year) (optional). If the
-reference period is not informed the system will consider the last closed
-period. In other words it will get the previous month. It's only
-possible to get a telephone bill after the reference period has ended.
+To start the API documentation, it's important to explain how the system was designed. Our application has 4 models: Call, CallDetail, PriceRule and PriceRuleDetail. 
 
-The telephone bill itself is composed by subscriber and period
-attributes and a list of all call records of the period. A call record
-belongs to the period in which the call has ended (eg. A call that
-started on January 31st and finished in February 1st belongs to February
-period).
+### Call (id, source, destination)
 
-Each telephone bill call record has the fields:
+This model represents every single call between two numbers: source and destination. Every time someone makes a call, a new object from Call is created. 
 
-* destination
-* call start date
-* call start time
-* call duration (hour, minute and seconds): e.g. 0h35m42s
-* call price: e.g. R$ 3,96
+### CallDetail (id, call_id, start, timestamp)
 
+Every Call is composed of two CallDetail objects. The ```start``` value is a boolean and if it's ```True```, then it's when the call started and if it's ```False```, it's when the call ended. It's forbidden to assign two CallDetail with the same start value and with the same timestamp value. 
 
-### 3. Pricing rules
+### PriceRule (id, created_date) 
 
-The call price depends on fixed charges, call duration and the time of
-the day that the call was made. There are two tariff times:
+This model represents a new price rule. The value of ```created_date``` informs when the rule was created. It's important because we can have a lot of price rules through the time but we have to guarantee that a Call made in the past won't have its bill value changed. So, this model helps us to keep track of the price rules so we can calculate past bills without saving them in the database.
 
-1. Standard time call - between 6h00 and 22h00 (excluding):
-   * Standing charge: R$ 0,36 (fixed charges that are used to pay for the
-     cost of the connection);
-   * Call charge/minute: R$ 0,09 (there is no fractioned charge. The
-     charge applies to each completed 60 seconds cycle).
+### PriceRuleDetails(id, price_id, standing_charge, call_charge, start, end)
 
-2. Reduced tariff time call - between 22h00 and 6h00 (excluding):
-   * Standing charge: R$ 0,36
-   * Call charge/minute: R$ 0,00 (hooray!)
+Every PriceRule is composed of many PriceRuleDetails. Every PriceRuleDetail can cover a period of time and apply variable charges per minute (call_charge) and fixed charge by call (standing_charge). To compute a bill, we need to look for the PriceRuleDetail that fits the period of time of the calls.
 
-It's important to notice that the price rules can change from time to
-time, but an already calculated call price can not change.
+### TelephoneBill
 
+The TelephoneBill isn't a model. It's generated in runtime and it contains some information about the bill given a source number and a period. If the period won't be given, so, the last month period will be used. 
 
-#### Examples
+### Endpoints
 
-1. For a call started at 21:57:13 and finished at 22:00:00 we have:
+Now That we already learnt about the models, we can describe the API endpoints:
 
-   * Standing charge: R$ 0,36
-   * Call charge:
-     * minutes between 21:57:13 and 22:00 = 2
-     * price: 2 * R$ 0,09 = R$ 0,18
-   * Total: R$ 0,18 + R$ 0,36 = R$ 0,54
+**/api/call/**
 
+* ```GET /api/call/```: get the list of all the calls
 
-### 4. Sample data
-Insert the following calls to your app after it is deployed to a working environment (eg. Heroku, gigalixir). This sample data will be used in your evaluation, so do this as the last step before submitting the project.
+  *HTTP 200 OK*
 
-These calls are between the numbers 99988526423 (source) and 9993468278 (destination).
-* call_id: 70, started at 2016-02-29T12:00:00Z and ended at 2016-02-29T14:00:00Z.
-* call_id: 71, started at 2017-12-12T15:07:13Z and ended at 2017-12-12T15:14:56Z.
-* call_id: 72, started at 2017-12-12T22:47:56Z and ended at 2017-12-12T22:50:56Z.
-* call_id: 73, started at 2017-12-12T21:57:13Z and ended at 2017-12-12T22:10:56Z.
-* call_id: 74, started at 2017-12-12T04:57:13Z and ended at 2017-12-12T06:10:56Z.
-* call_id: 75, started at 2017-12-12T21:57:13Z and ended at 2017-12-13T22:10:56Z.
-* call_id: 76, started at 2017-12-12T15:07:58Z and ended at 2017-12-12T15:12:56Z.
-* call_id: 77, started at 2018-02-28T21:57:13Z and ended at 2018-03-01T22:10:56Z.
+  ```json
+  [
+      {
+          "id": 8,
+          "source": "99988526423",
+          "destination": "9993468278"
+      },
+      {
+          "id": 9,
+          "source": "99988526423",
+          "destination": "9993468278"
+      }
+  ]
+  ```
 
+* ```GET /api/call/<id>```: get the call if it exists
 
-## Project Requirements:
+  *HTTP 200 OK*
 
-* Provide a working environment with your project (eg. Heroku, )
-* Application must be written in Python, Elixir or Go.
-* Python
-  * Use Python >= 3.5
-  * Choose any Python web framework you want to solve the problem
-  * Use PEP-8 for code style
-  * [Python Coding Style](http://docs.python-guide.org/en/latest/writing/style/)
-* Elixir
-  * Elixir >= 1.6.5
-  * Phoenix >= 1.3.0
-  * [Elixir Style Guide](http://elixir.community/styleguide)
-* Go
-  * Go >= 1.10
-  * [Effective Go](https://golang.org/doc/effective_go.html)
-* Every text or code must be in English
-* Write the project documentation containing:
-  * Description;
-  * Installing and testing instructions;
-  * Brief description of the work environment used to run this
-    project (Computer/operating system, text editor/IDE, libraries, etc).
-* Provide an API documentation (in english);
-* Variables, code and strings must be all in English.
+  ```json
+  {
+      "id": 8,
+      "source": "99988526423",
+      "destination": "9993468278"
+  }
+  ```
 
+  *HTTP 404 NOT FOUND*
 
-## Recommendations
+  ```json
+  {
+    "detail": "Not Found"
+  }
+  ```
 
-* Write tests!
-* Practice the [12 Factor-App](http://12factor.net) concepts;
-* Use [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design))
-  design principles;
-* Use programming good practices;
-* Use git best practices (https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/best-practices),
-  with clear messages (written in English);
-* Be aware when modeling the database;
-* Be careful with REST API details. They can bite you!
+* ```POST /api/call/```: create a new call
 
-**Have fun!**
+  *HTTP 201 CREATED*
+
+  ```json
+  {
+      "id": 8,
+      "source": "99988526423",
+      "destination": "9993468278"
+  }
+  ```
+
+**/api/calldetail/**
+
+* ```GET /api/calldetail/```: get the list of all call details
+
+  *HTTP 200 OK*
+  ```
+  [
+    {
+        "id": 30,
+        "call_id": 8,
+        "start": true,
+        "timestamp": "2016-02-29T12:00:00"
+    },
+    {
+        "id": 31,
+        "call_id": 8,
+        "start": false,
+        "timestamp": "2016-02-29T14:00:00"
+    }
+  ]
+  ```
+
+* ```GET /api/calldetail/<id>```: get a single call detail if it exists
+
+  *HTTP 200 OK*
+  ```
+  {
+      "id": 30,
+      "call_id": 8,
+      "start": true,
+      "timestamp": "2016-02-29T12:00:00"
+  }
+  ```
+
+   *HTTP 404 NOT FOUND*
+
+  ```json
+  {
+    "detail": "Not Found"
+  }
+
+  * ```POST /api/calldetail/```: create a new call
+
+  *HTTP 201 CREATED*
+
+  ```json
+  {
+      "id": 30,
+      "call_id": 8,
+      "start": true,
+      "timestamp": "2016-02-29T12:00:00"
+  }
+  ```
+
+**/api/pricerule/**
+
+* ```GET /api/pricerule/```: get the list of all price rules
+
+  *HTTP 200 OK*
+  ```
+  [
+      {
+          "id": 7,
+          "created_date": "2000-03-01T22:10:56"
+      }
+  ]
+  ```
+
+* ```GET /api/pricerule/<id>```: get a single pricerule if it exists
+
+  *HTTP 200 OK*
+  ```
+  {
+      "id": 7,
+      "created_date": "2000-03-01T22:10:56"
+  }
+  ```
+
+   *HTTP 404 NOT FOUND*
+
+  ```json
+  {
+    "detail": "Not Found"
+  }
+
+  * ```POST /api/calldetail/```: create a new price rule
+
+  *HTTP 201 CREATED*
+
+  ```json
+  {
+      "id": 7,
+      "created_date": "2000-03-01T22:10:56"
+  }
+  ```
+
+**/api/priceruledetail/**
+
+* ```GET /api/priceruledetail/```: get the list of all price rules details
+
+  *HTTP 200 OK*
+  ```
+  [
+    {
+        "id": 7,
+        "price_id": 7,
+        "standing_charge": 0.36,
+        "call_charge": 0.0,
+        "start": "22:00:00",
+        "end": "05:59:00"
+    },
+    {
+        "id": 8,
+        "price_id": 7,
+        "standing_charge": 0.36,
+        "call_charge": 0.09,
+        "start": "06:00:00",
+        "end": "21:59:00"
+    }
+  ]
+  ```
+
+* ```GET /api/priceruledetails/<id>```: get a single price rule detail  if it exists
+
+  *HTTP 200 OK*
+  ```
+  {
+      "id": 7,
+      "price_id": 7,
+      "standing_charge": 0.36,
+      "call_charge": 0.0,
+      "start": "22:00:00",
+      "end": "05:59:00"
+  }
+  ```
+
+   *HTTP 404 NOT FOUND*
+
+  ```json
+  {
+    "detail": "Not Found"
+  }
+
+  * ```POST /api/priceruledetail/```: create a new price rule detail
+
+  *HTTP 201 CREATED*
+
+  ```json
+  {
+      "id": 7,
+      "price_id": 7,
+      "standing_charge": 0.36,
+      "call_charge": 0.0,
+      "start": "22:00:00",
+      "end": "05:59:00"
+  }
+  ```
+
+**/api/telephonebill/**
+
+* ```GET /api/telephonebill?source=<source>&period=<period>```: get the telephone bill of the source during the given period. 
+
+  ```
+  [
+    {
+        "destination": "9993468278",
+        "start_date": "2017-12-12",
+        "start_time": "15:07:13",
+        "duration": "0h7m43s",
+        "price": 0.99
+    },
+    {
+        "destination": "9993468278",
+        "start_date": "2017-12-12",
+        "start_time": "22:47:56",
+        "duration": "0h3m0s",
+        "price": 0.36
+    }
+  ]
+  ```
+
