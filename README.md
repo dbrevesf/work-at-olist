@@ -88,13 +88,17 @@ This model represents a new price rule. The value of ```created_date``` informs 
 
 ### PriceRuleDetails(id, price_id, standing_charge, call_charge, start, end)
 
-Every PriceRule is composed of many PriceRuleDetails. Every PriceRuleDetail can cover a period of time and apply variable charges per minute (call_charge) and fixed charge by call (standing_charge). To compute a bill, we need to look for the PriceRuleDetail that fits the period of time of the calls. 
+Every PriceRule is composed of many PriceRuleDetails. Every PriceRuleDetail can cover a period of time and apply variable charges per minute (call_charge) and fixed charge by call (standing_charge). To compute a bill, we need to look for the PriceRuleDetail that fits the period of time of the calls.
+
+### TelephoneBill
+
+The TelephoneBill isn't a model. It's generated in runtime and it contains some informations about the bill given a source number and a period. If the period won't be given, so, the last month period will be used. 
 
 ### Endpoints
 
 Now That we already learnt about the models, we can describe the API endpoints:
 
-**/api/call**
+**/api/call/**
 
 * ```GET /api/call/```: get the list of all the calls
 
@@ -147,7 +151,184 @@ Now That we already learnt about the models, we can describe the API endpoints:
   }
   ```
 
+**/api/calldetail/**
 
+* ```GET /api/calldetail/```: get the list of all call details
 
+  *HTTP 200 OK*
+  ```
+  [
+    {
+        "id": 30,
+        "call_id": 8,
+        "start": true,
+        "timestamp": "2016-02-29T12:00:00"
+    },
+    {
+        "id": 31,
+        "call_id": 8,
+        "start": false,
+        "timestamp": "2016-02-29T14:00:00"
+    }
+  ]
+  ```
 
+* ```GET /api/calldetail/<id>```: get a single call detail if it exists
+
+  *HTTP 200 OK*
+  ```
+  {
+      "id": 30,
+      "call_id": 8,
+      "start": true,
+      "timestamp": "2016-02-29T12:00:00"
+  }
+  ```
+
+   *HTTP 404 NOT FOUND*
+
+  ```json
+  {
+    "detail": "Not Found"
+  }
+
+  * ```POST /api/calldetail/```: create a new call
+
+  *HTTP 201 CREATED*
+
+  ```json
+  {
+      "id": 30,
+      "call_id": 8,
+      "start": true,
+      "timestamp": "2016-02-29T12:00:00"
+  }
+  ```
+
+**/api/pricerule/**
+
+* ```GET /api/pricerule/```: get the list of all price rules
+
+  *HTTP 200 OK*
+  ```
+  [
+      {
+          "id": 7,
+          "created_date": "2000-03-01T22:10:56"
+      }
+  ]
+  ```
+
+* ```GET /api/pricerule/<id>```: get a single pricerule if it exists
+
+  *HTTP 200 OK*
+  ```
+  {
+      "id": 7,
+      "created_date": "2000-03-01T22:10:56"
+  }
+  ```
+
+   *HTTP 404 NOT FOUND*
+
+  ```json
+  {
+    "detail": "Not Found"
+  }
+
+  * ```POST /api/calldetail/```: create a new price rule
+
+  *HTTP 201 CREATED*
+
+  ```json
+  {
+      "id": 7,
+      "created_date": "2000-03-01T22:10:56"
+  }
+  ```
+
+**/api/priceruledetail/**
+
+* ```GET /api/priceruledetail/```: get the list of all price rules details
+
+  *HTTP 200 OK*
+  ```
+  [
+    {
+        "id": 7,
+        "price_id": 7,
+        "standing_charge": 0.36,
+        "call_charge": 0.0,
+        "start": "22:00:00",
+        "end": "05:59:00"
+    },
+    {
+        "id": 8,
+        "price_id": 7,
+        "standing_charge": 0.36,
+        "call_charge": 0.09,
+        "start": "06:00:00",
+        "end": "21:59:00"
+    }
+  ]
+  ```
+
+* ```GET /api/priceruledetails/<id>```: get a single price rule detail  if it exists
+
+  *HTTP 200 OK*
+  ```
+  {
+      "id": 7,
+      "price_id": 7,
+      "standing_charge": 0.36,
+      "call_charge": 0.0,
+      "start": "22:00:00",
+      "end": "05:59:00"
+  }
+  ```
+
+   *HTTP 404 NOT FOUND*
+
+  ```json
+  {
+    "detail": "Not Found"
+  }
+
+  * ```POST /api/priceruledetail/```: create a new price rule detail
+
+  *HTTP 201 CREATED*
+
+  ```json
+  {
+      "id": 7,
+      "price_id": 7,
+      "standing_charge": 0.36,
+      "call_charge": 0.0,
+      "start": "22:00:00",
+      "end": "05:59:00"
+  }
+  ```
+
+**/api/telephonebill/**
+
+* ```GET /api/telephonebill?source=<source>&period=<period>```: get the telephone bill of the source during the given period. 
+
+  ```
+  [
+    {
+        "destination": "9993468278",
+        "start_date": "2017-12-12",
+        "start_time": "15:07:13",
+        "duration": "0h7m43s",
+        "price": 0.99
+    },
+    {
+        "destination": "9993468278",
+        "start_date": "2017-12-12",
+        "start_time": "22:47:56",
+        "duration": "0h3m0s",
+        "price": 0.36
+    }
+  ]
+  ```
 
