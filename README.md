@@ -294,7 +294,7 @@ Now That we already learnt about the models, we can describe the API endpoints:
   {
     "detail": "Not Found"
   }
-
+  ```
   * ```POST /api/priceruledetail/```: create a new price rule detail
 
   *HTTP 201 CREATED*
