@@ -22,8 +22,7 @@ def standardize_date(date, pattern):
     try:
         standard_date = datetime.datetime.strptime(date, pattern)
     except ValueError:
-        error_msg = (strings.TIME_PATTERN_ERROR % (pattern))
-        standard_date = {strings.INPUT_ERROR_KEY: error_msg}
+        standard_date = None
     return standard_date
 
 
