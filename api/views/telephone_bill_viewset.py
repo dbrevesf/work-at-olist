@@ -75,7 +75,7 @@ class TelephoneBillViewSet(viewsets.ViewSet):
                                         total_minutes *
                                         selected_rule.call_charge)
                     call_bill[strings.PRICE_KEY] = round(final_price, 2)
-                    response = {strings.SUCCESS_KEY: call_bill}
+                    response = call_bill
                 else:
                     left_time = 0
                     response = {strings.ERROR_KEY: strings.NO_PRICE_RULE_ERROR}
@@ -162,7 +162,7 @@ class TelephoneBillViewSet(viewsets.ViewSet):
             bill_list = []
             for call in period_calls:
                 bill = self.__get_call_bill(call)
-                if bill:
+                if strings.ERROR_KEY not in bill.keys():
                     bill_list.append(bill)
             if bill_list:
                 response = Response(bill_list, status.HTTP_200_OK)
