@@ -94,7 +94,7 @@ Every PriceRule is composed of many PriceRuleDetails. Every PriceRuleDetail can 
 
 Now That we already learnt about the models, we can describe the API endpoints:
 
-*/api/call*
+**/api/call**
 
 * ```GET /api/call/```: get the list of all the calls
 
