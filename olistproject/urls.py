@@ -27,9 +27,12 @@ router.register(r'call', CallViewSet)
 router.register(r'calldetail', CallDetailViewSet)
 router.register(r'pricerule', PriceRuleViewSet)
 router.register(r'priceruledetail', PriceRuleDetailViewSet)
-router.register(r'telephonebill', TelephoneBillViewSet, base_name='telephonebill')
+router.register(r'telephonebill',
+                TelephoneBillViewSet,
+                base_name='telephonebill')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('', include('frontend.urls'))
 ]

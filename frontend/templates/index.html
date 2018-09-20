@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Work at Olist</title>
+    </head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+    <body>
+        <h1>Work at Olist - Telephone Bill Project</h1>
+        <li><a href="/">Home</a></li>
+        <li><a href="/admin">Admin</a></li>
+        <li><a href="/api">API</a></li>
+        <br>
+        <br>
+        <form action="{% url 'index' %}" method="get">
+            Source (10 to 11 numbers - the first 2 numbers being the area code): <input type="text" name="source" maxlength="11" minlength="10">
+            <br>
+            <br>
+            Period (Year and month in the format "YYYY-MM") - (optional): <input type="text" name="period" maxlength="7"><br><br>
+            <input type="submit" value="Get Telephone Bill">
+        </form>
+        <br>
+        <br>
+        {% if response %}
+            <h1>Telephone Bill</h1>
+            {% if response.error %}
+                {{response.error}}
+            {% elif response.input_error %}
+                {{response.input_error}}
+            {% else %}
+                <br>
+                Source: {{source}}
+                <br>
+                Period: {{period}}
+                <br>
+                <br>
+                <table style="width:50%">
+                    <tr>
+                        <th>Destination</th>
+                        <th>Start Date</th>
+                        <th>Start Time</th>
+                        <th>Duration</th>
+                        <th>Price</th>
+                    </tr>
+                    {% for call in response.calls %}
+                        <tr>
+                            <td>{{call.destination}}</td>
+                            <td>{{call.start_date}}</td>
+                            <td>{{call.start_time}}</td>
+                            <td>{{call.duration}}</td> 
+                            <td>R${{call.price}}</td>
+
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Total</td>
+                        <td></td> 
+                        <td>R${{response.final_price}}</td>
+                    </tr>
+                </table>    
+            {% endif %}
+        {% endif %}
+    <footer>
+        <p>Developed by: Daniel Breves Ferreira for Olist</p>
+        <p>Contact: <a href="mailto:dbrevesf@gmail.com">dbrevesf@gmail.com</a></p>
+    </footer>
+    </body>
+</html>

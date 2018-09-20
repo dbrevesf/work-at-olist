@@ -72,7 +72,8 @@
 
 ## API Documentation
 
-To start the API documentation, it's important to explain how the system was designed. Our application has 4 models: Call, CallDetail, PriceRule and PriceRuleDetail. 
+
+To start the API documentation, it's important to explain the models was designed. Our application has 4 models: Call, CallDetail, PriceRule and PriceRuleDetail. 
 
 ### Call (id, source, destination)
 

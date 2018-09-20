@@ -115,9 +115,9 @@ class TelephoneBillTest(APITestCase):
                                                     period)
         response = self.client.get(parameter_url, format='json')
 
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['calls']), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]['success']['price'], 4.5)
+        self.assertEqual(response.data['calls'][0]['price'], 4.5)
 
     def test_get_telephone_bill_without_period(self):
 
@@ -127,9 +127,9 @@ class TelephoneBillTest(APITestCase):
                                                     self.source,
                                                     '')
         response = self.client.get(parameter_url, format='json')
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['calls']), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]['success']['price'], 4.5)
+        self.assertEqual(response.data['calls'][0]['price'], 4.5)
 
     def test_get_telephone_bill_without_source(self):
 
@@ -151,9 +151,9 @@ class TelephoneBillTest(APITestCase):
                                                     self.source,
                                                     period)
         response = self.client.get(parameter_url, format='json')
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['calls']), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]['success']['price'], 3367.0)
+        self.assertEqual(response.data['calls'][0]['price'], 3367.0)
 
     def test_get_telephone_bill_with_short_calls(self):
 
@@ -164,7 +164,6 @@ class TelephoneBillTest(APITestCase):
                                                     self.source,
                                                     period)
         response = self.client.get(parameter_url, format='json')
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['calls']), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]['success']['price'], 0.90)
-
+        self.assertEqual(response.data['calls'][0]['price'], 0.90)

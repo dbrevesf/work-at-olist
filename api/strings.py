@@ -17,6 +17,9 @@ DURATION_KEY = 'duration'
 PRICE_KEY = 'price'
 ERROR_KEY = 'error'
 PERIOD_KEY = 'period'
+RESPONSE_KEY = 'response'
+FINAL_PRICE_KEY = 'final_price'
+CALLS_KEY = 'calls'
 
 # LIST OF STRINGS
 TRUE_VALUES = ['True', 'true', 'TRUE']
@@ -44,4 +47,3 @@ COMPLETE_DATE_PATTERN = '%Y-%m-%dT%H:%M:%SZ'
 YEAR_MONTH_PATTERN = '%Y-%m'
 TIME_PATTERN = '%H:%M'
 HOUR_MINUTE_SECOND_PATTERN = '%dh%dm%ds'
-
