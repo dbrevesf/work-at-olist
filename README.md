@@ -192,6 +192,7 @@ Now That we already learnt about the models, we can describe the API endpoints:
   {
     "detail": "Not Found"
   }
+  ```
 
   * ```POST /api/calldetail/```: create a new call
 
@@ -236,6 +237,7 @@ Now That we already learnt about the models, we can describe the API endpoints:
   {
     "detail": "Not Found"
   }
+  ```
 
   * ```POST /api/calldetail/```: create a new price rule
 
