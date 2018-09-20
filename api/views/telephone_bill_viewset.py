@@ -160,12 +160,17 @@ class TelephoneBillViewSet(viewsets.ViewSet):
             period = utils.standardize_date(period, strings.YEAR_MONTH_PATTERN)
             period_calls = self.__get_period_calls(source, period)
             bill_list = []
+            complete_bill = {}
+            final_price = 0
             for call in period_calls:
                 bill = self.__get_call_bill(call)
                 if strings.ERROR_KEY not in bill.keys():
+                    final_price += float(bill.get(strings.PRICE_KEY))
                     bill_list.append(bill)
             if bill_list:
-                response = Response(bill_list, status.HTTP_200_OK)
+                complete_bill[strings.FINAL_PRICE_KEY] = round(final_price, 2)
+                complete_bill[strings.CALLS_KEY] = bill_list
+                response = Response(complete_bill, status.HTTP_200_OK)
             else:
                 content = {strings.ERROR_KEY: strings.BILLS_NOT_FOUND_ERROR}
                 response = Response(content, status.HTTP_404_NOT_FOUND)

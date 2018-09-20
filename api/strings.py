@@ -18,6 +18,8 @@ PRICE_KEY = 'price'
 ERROR_KEY = 'error'
 PERIOD_KEY = 'period'
 RESPONSE_KEY = 'response'
+FINAL_PRICE_KEY = 'final_price'
+CALLS_KEY = 'calls'
 
 # LIST OF STRINGS
 TRUE_VALUES = ['True', 'true', 'TRUE']

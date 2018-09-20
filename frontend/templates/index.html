@@ -57,7 +57,7 @@
                         <th>Duration</th>
                         <th>Price</th>
                     </tr>
-                    {% for call in response %}
+                    {% for call in response.calls %}
                         <tr>
                             <td>{{call.destination}}</td>
                             <td>{{call.start_date}}</td>
@@ -67,6 +67,13 @@
 
                         </tr>
                     {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Total</td>
+                        <td></td> 
+                        <td>R${{response.final_price}}</td>
+                    </tr>
                 </table>    
             {% endif %}
         {% endif %}
