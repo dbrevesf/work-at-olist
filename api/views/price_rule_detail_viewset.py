@@ -78,19 +78,19 @@ class PriceRuleDetailViewSet(viewsets.ModelViewSet):
                             conflict = True
                             break
                         else:
-                            if rule.start <= start or start <= rule.end:
+                            if rule.start <= start or start < rule.end:
                                 conflict = True
                                 break
-                            elif rule.start <= end or end <= rule.end:
+                            elif rule.start < end or end <= rule.end:
                                 conflict = True
                                 break
                             else:
                                 conflict = False
                     else:
-                        if rule.start <= start <= rule.end:
+                        if rule.start <= start < rule.end:
                             conflict = True
                             break
-                        elif rule.start <= end <= rule.end:
+                        elif rule.start < end <= rule.end:
                             conflict = True
                             break
                         else:
