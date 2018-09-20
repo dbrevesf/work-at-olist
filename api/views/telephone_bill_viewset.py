@@ -137,12 +137,14 @@ class TelephoneBillViewSet(viewsets.ViewSet):
         selected_rule = None
         for rule_detail in price_rule_details:
             if rule_detail.start > rule_detail.end:
-                if not (rule_detail.end < start.time() <=
+                if not (rule_detail.end < start.time() <
                         rule_detail.start):
                     selected_rule = rule_detail
+                    break
             else:
                 if rule_detail.start <= start.time() < rule_detail.end:
                     selected_rule = rule_detail
+                    break
         return selected_rule
 
     def list(self, request):
@@ -152,8 +154,9 @@ class TelephoneBillViewSet(viewsets.ViewSet):
         response = None
         source = request.query_params.get(strings.SOURCE_KEY)
         if source:
-            period = request.query_params.get(strings.PERIOD_KEY,
-                                              utils.get_last_month_period())
+            period = request.query_params.get(strings.PERIOD_KEY)
+            if not period:
+                period = utils.get_last_month_period()
             period = utils.standardize_date(period, strings.YEAR_MONTH_PATTERN)
             period_calls = self.__get_period_calls(source, period)
             bill_list = []
