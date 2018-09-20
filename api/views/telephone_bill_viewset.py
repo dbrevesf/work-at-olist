@@ -100,26 +100,38 @@ class TelephoneBillViewSet(viewsets.ViewSet):
         period_calls = []
         if call_details:
             call_data = {}
+            end_calls = []
             for call_detail in call_details:
-                check_same_year = call_detail.timestamp.year == period.year
-                check_same_month = call_detail.timestamp.month == period.month
-                if check_same_month and check_same_year:
-                    call_id = call_detail.call_id.id
-                    destination = call_detail.call_id.destination
-                    if call_id not in call_data.keys():
-                        call_data[call_id] = {}
-                    if call_detail.start:
-                        call_data[call_id][strings.START_KEY] =\
-                            call_detail.timestamp
-                    else:
-                        call_data[call_id][strings.END_KEY] =\
-                            call_detail.timestamp
-                    call_data[call_id][strings.DESTINATION_KEY] = destination
-                    check_start = call_data[call_id].get(strings.START_KEY)
-                    check_end = call_data[call_id].get(strings.END_KEY)
-                    if check_start and check_end:
-                        period_calls.append(call_data)
-                        call_data = {}
+                if not call_detail.start:
+                    check_same_year = call_detail.timestamp.year == period.year
+                    check_same_month = (call_detail.timestamp.month ==
+                                        period.month)
+                    if check_same_year and check_same_month:
+                        end_calls.append(call_detail)
+            complete_calls = []
+            for end_call in end_calls:
+                for call_detail in call_details:
+                    if call_detail.call_id == end_call.call_id:
+                        if call_detail.start:
+                            complete_calls.append(call_detail)
+                complete_calls.append(end_call)
+            for call_detail in complete_calls:
+                call_id = call_detail.call_id.id
+                destination = call_detail.call_id.destination
+                if call_id not in call_data.keys():
+                    call_data[call_id] = {}
+                if call_detail.start:
+                    call_data[call_id][strings.START_KEY] =\
+                        call_detail.timestamp
+                else:
+                    call_data[call_id][strings.END_KEY] =\
+                        call_detail.timestamp
+                call_data[call_id][strings.DESTINATION_KEY] = destination
+                check_start = call_data[call_id].get(strings.START_KEY)
+                check_end = call_data[call_id].get(strings.END_KEY)
+                if check_start and check_end:
+                    period_calls.append(call_data)
+                    call_data = {}
         return period_calls
 
     def __select_price_rule(self, start, price_rule_details):
@@ -168,6 +180,8 @@ class TelephoneBillViewSet(viewsets.ViewSet):
                 complete_bill = {}
                 final_price = 0
                 for call in period_calls:
+                    print("****")
+                    print(call)
                     bill = self.__get_call_bill(call)
                     if strings.ERROR_KEY not in bill.keys():
                         final_price += float(bill.get(strings.PRICE_KEY))
